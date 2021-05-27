@@ -88,5 +88,49 @@ namespace API.Controllers
 
             return BadRequest("Photo wasn't Added");
         }
+
+        [HttpPut("set-main-photo/{photoId}")]
+        public async Task<ActionResult> SetMainPhoto(int photoId)
+        {
+            var user = await _userRepo.GetUserByUsernameAsync(User.GetUsername());
+
+            var photo = user.Photos.FirstOrDefault(x => x.Id == photoId);
+
+            if (photo.IsMain) return BadRequest("This is already your Main photo");
+
+            var currentMain = user.Photos.FirstOrDefault(x => x.IsMain);
+
+            if (currentMain != null) currentMain.IsMain = false;
+
+            photo.IsMain = true;
+
+            if (await _userRepo.SaveAllAsync()) return NoContent();
+
+            return BadRequest("Failed to set main");
+        }
+
+        [HttpDelete("delete-photo/{photoId}")]
+        public async Task<ActionResult> DeletePhoto(int photoId)
+        {
+            var user = await _userRepo.GetUserByUsernameAsync(User.GetUsername());
+
+            var photo = user.Photos.FirstOrDefault(x => x.Id == photoId);
+
+            if (photo == null) return NotFound();
+
+            if (photo.IsMain) return BadRequest("Cant Delete Main Photo");
+
+            if (photo.PublicId != null)
+            {
+                var result = await _photo.DeletePhotoAsync(photo.PublicId);
+                if (result.Error != null) return BadRequest(result.Error.Message);
+            }
+
+            user.Photos.Remove(photo);
+
+            if (await _userRepo.SaveAllAsync()) return Ok();
+
+            return BadRequest("Failed To Delete");
+        }
     }
 }
