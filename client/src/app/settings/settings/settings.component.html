@@ -1,0 +1,24 @@
+<div *ngIf="member">
+    <div>
+        <tabset class="member-tabset">
+            <tab heading='Change Username'>
+                <h2 style="text-align: center;" class="mt-4">Current Username:</h2>
+                <h1 rows="2" class="form-control" style="text-align: center; font-size: 25px;" >{{member.username}}</h1>
+                <form #editForm="ngForm" id="editForm" (ngSubmit)="updateUsername(member)">
+                    <h2 style="text-align: center;" class="mt-4">Set New Username:</h2>
+                    <input [(ngModel)]="member.username" 
+                    name="username" rows="2" class="form-control" 
+                    maxlength="10" type="text" style="text-align: center; font-size: 25px;"
+                    (keypress)="omit_special_char($event)"
+                    autocomplete="off">
+                </form>
+                <div style="text-align: center;">
+                    <button [disabled]="!editForm.dirty" form="editForm" class="btn btn-success" style="margin-top: 6%; padding: 10px;">Save Changes</button>
+                </div>
+            </tab>
+            <tab heading='Change Password'>
+                <p>Change password</p>
+            </tab>
+        </tabset>
+    </div>
+</div>

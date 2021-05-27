@@ -56,6 +56,21 @@ namespace API.Controllers
             return BadRequest("Fail");
         }
 
+        [HttpPut("change-username")]
+        public async Task<ActionResult<UsernameDTO>> UpdateUserName(UsernameDTO usernameDTO)
+        {
+            var user = await _userRepo.GetUserByUsernameAsync(User.GetUsername());
+
+            _mapper.Map(usernameDTO, user);
+
+            _userRepo.Update(user);
+
+            if (await _userRepo.SaveAllAsync()) return NoContent();
+
+            return BadRequest("Fail");
+        }
+
+
         [HttpPost("add-photo")]
         public async Task<ActionResult<PhotoDTO>> AddPhoto(IFormFile file)
         {

@@ -40,6 +40,15 @@ export class MembersService {
     )
   }
 
+  updateUsername(member: Member) {
+    return this.http.put(this.baseUrl + 'users/change-username', member).pipe(
+      map(() => {
+        const index = this.members.indexOf(member);
+        this.members[index] = member;
+      })
+    )
+  }
+
   setMainPhoto(photoId: number) {
     return this.http.put(this.baseUrl + 'users/set-main-photo/' + photoId, {});
   }
