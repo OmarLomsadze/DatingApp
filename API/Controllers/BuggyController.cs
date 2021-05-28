@@ -22,7 +22,7 @@ namespace API.Controllers
         [HttpGet("auth")]
         public ActionResult<string> GetSecret()
         {
-            return "return text";
+            return "return racxa";
         }
 
         [HttpGet("not-found")]

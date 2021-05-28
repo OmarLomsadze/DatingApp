@@ -26,7 +26,7 @@ export class SettingsComponent implements OnInit {
   }
 
   loadMember() {
-    this.memberService.getMember(this.user.userName).subscribe(member => {
+    this.memberService.getMember(this.user.username).subscribe(member => {
       this.member = member;
     })
   }
@@ -35,7 +35,7 @@ export class SettingsComponent implements OnInit {
     this.memberService.updateUsername(this.member).subscribe(() =>{
       this.toastr.success('Ez update');
       this.editForm.reset(this.member);
-      this.user.userName = member.username;
+      this.user.username = member.username;
       this.accountService.setCurrentUser(this.user);
       this.member.username = member.username;
     })
