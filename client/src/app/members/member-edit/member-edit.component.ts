@@ -13,9 +13,9 @@ import { take } from 'rxjs/operators';
   styleUrls: ['./member-edit.component.css']
 })
 export class MemberEditComponent implements OnInit {
-  @ViewChild('editForm') editForm: NgForm;
-  member: Member;
-  user: User;
+  @ViewChild('editForm') editForm!: NgForm;
+  member!: Member;
+  user!: User;
   @HostListener('window:beforeunload', ['$event']) unloadNotification($event: any) {
     if(this.editForm.dirty) {
       $event.returnValue = true;

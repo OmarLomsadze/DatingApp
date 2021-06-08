@@ -13,9 +13,9 @@ import { take } from 'rxjs/operators';
   styleUrls: ['./settings.component.css']
 })
 export class SettingsComponent implements OnInit {
-  @ViewChild('editForm') editForm: NgForm;
-  member: Member;
-  user: User;
+  @ViewChild('editForm')  editForm!: NgForm;
+  member!: Member;
+  user!: User;
 
   constructor(private accountService: AccountService, private memberService: MembersService, private toastr: ToastrService) { 
     this.accountService.currentUser$.pipe(take(1)).subscribe(user => this.user = user);

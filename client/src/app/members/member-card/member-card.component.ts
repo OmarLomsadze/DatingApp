@@ -9,16 +9,16 @@ import { ToastrService } from 'ngx-toastr';
   styleUrls: ['./member-card.component.css']
 })
 export class MemberCardComponent implements OnInit {
-  @Input() member: Member;
+  @Input()  member!: Member | undefined;
 
   constructor(private memberService: MembersService, private toastr: ToastrService) { }
 
   ngOnInit(): void {
   }
 
-  addLike(member: Member) {
-    this.memberService.addLike(member.username).subscribe(() => {
-      this.toastr.success("You Have Liked " + member.knownAs);
+  addLike(member: Member | undefined) {
+    this.memberService.addLike(member!.username).subscribe(() => {
+      this.toastr.success("You Have Liked " + member?.knownAs);
     })
   }
 
