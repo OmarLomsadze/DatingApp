@@ -4,7 +4,7 @@
             No Messages Yet... Say hi by Messaging First
         </div>
 
-        <ul *ngIf="(messageService.messageThread$ | async)?.length > 0" class="chat">
+        <ul #scrollMe style="overflow: scroll; height: 500px; width: 100%; overflow-x: hidden;" [scrollTop]="scrollMe.scrollHeight" *ngIf="(messageService.messageThread$ | async)?.length > 0" class="chat">
             <li *ngFor="let message of (messageService.messageThread$ | async)">
                 <div>
                     <span class="chat-image float-right">

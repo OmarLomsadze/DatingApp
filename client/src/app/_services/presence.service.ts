@@ -19,22 +19,26 @@ export class PresenceService {
   constructor(private toastr: ToastrService, private router: Router) { }
 
   createHubConnection(user: User) {
-    this.hubConnection = new HubConnectionBuilder().withUrl(this.hubUrl + 'presence', {
-      accessTokenFactory: () => user.token
-    })
-    .withAutomaticReconnect().build();
+    this.hubConnection = new HubConnectionBuilder()
+      .withUrl(this.hubUrl + 'presence', {
+        accessTokenFactory: () => user.token
+      })
+      .withAutomaticReconnect()
+      .build()
 
-    this.hubConnection.start().catch(error => console.log(error));
+    this.hubConnection
+      .start()
+      .catch(error => console.log(error));
 
     this.hubConnection.on('UserIsOnline', username => {
-      this.onlineUsers$.pipe(take(1)).subscribe(u => {
-        this.onlineUsersSource.next([...u, username]);
+      this.onlineUsers$.pipe(take(1)).subscribe(usernames => {
+        this.onlineUsersSource.next([...usernames, username])
       })
     })
 
     this.hubConnection.on('UserIsOffline', username => {
-      this.onlineUsers$.pipe(take(1)).subscribe(u => {
-        this.onlineUsersSource.next([...u.filter(x => x !== username)]);
+      this.onlineUsers$.pipe(take(1)).subscribe(usernames => {
+        this.onlineUsersSource.next([...usernames.filter(x => x !== username)])
       })
     })
 
@@ -43,11 +47,15 @@ export class PresenceService {
     })
 
     this.hubConnection.on('NewMessageReceived', ({username, knownAs}) => {
-      this.toastr.info(knownAs + ' Has Sent You A New Message!').onTap.pipe(take(1)).subscribe(() => this.router.navigateByUrl('/members/' + username + '?tab=3'));
+      this.toastr.info(knownAs + ' has sent you a new message!')
+        .onTap
+        .pipe(take(1))
+        .subscribe(() => this.router.navigateByUrl('/members/' + username + '?tab=3'));
     })
   }
 
   stopHubConnection() {
-    this.hubConnection.stop().catch(e => console.log(e));
+    this.hubConnection.stop().catch(error => console.log(error));
   }
 }
+

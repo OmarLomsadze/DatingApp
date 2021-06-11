@@ -31,6 +31,7 @@ namespace API.SignalR
         public Task<bool> UserDisconnected(string username, string connectionId)
         {
             bool isOffline = false;
+
             lock (OnlineUsers)
             {
                 if (!OnlineUsers.ContainsKey(username)) return Task.FromResult(isOffline);

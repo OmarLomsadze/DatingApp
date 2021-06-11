@@ -17,3 +17,20 @@
 .rounded-circle {
     max-height: 35px;
 }
+
+::-webkit-scrollbar {
+    width: 20px;
+}
+  
+::-webkit-scrollbar-track {
+    border-radius: 10px;
+}
+   
+::-webkit-scrollbar-thumb {
+    background: red; 
+    border-radius: 10px;
+}
+  
+::-webkit-scrollbar-thumb:hover {
+    background: #b30000; 
+}
