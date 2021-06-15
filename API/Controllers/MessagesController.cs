@@ -17,12 +17,10 @@ namespace API.Controllers
     public class MessagesController : BaseApiController
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IMapper _mapper;
 
-        public MessagesController(IUnitOfWork UOW, IMapper mapper)
+        public MessagesController(IUnitOfWork UOW)
         {
             _unitOfWork = UOW;
-            _mapper = mapper;
         }
 
         [HttpGet]

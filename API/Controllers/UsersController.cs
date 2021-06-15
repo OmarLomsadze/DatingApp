@@ -50,7 +50,8 @@ namespace API.Controllers
         [HttpGet("{username}", Name = "GetUser")]
         public async Task<ActionResult<MemberDTO>> GetUser(string username)
         {
-            return await _unitOfWork.UserRepository.GetMemberAsync(username);
+            var currentUsername = User.GetUsername();
+            return await _unitOfWork.UserRepository.GetMemberAsync(username, isCurrentUser: currentUsername == username);
         }
 
         [HttpPut]
@@ -89,21 +90,13 @@ namespace API.Controllers
 
             var result = await _photo.AddPhotoAsync(file);
 
-            if (result.Error != null)
-            {
-                return BadRequest(result.Error.Message);
-            }
+            if (result.Error != null) return BadRequest(result.Error.Message);
 
             var photo = new Photo
             {
                 Url = result.SecureUrl.AbsoluteUri,
                 PublicId = result.PublicId
             };
-
-            if (user.Photos.Count == 0)
-            {
-                photo.IsMain = true;
-            }
 
             user.Photos.Add(photo);
 
@@ -112,13 +105,13 @@ namespace API.Controllers
                 return CreatedAtRoute("GetUser", new { username = user.UserName }, _mapper.Map<PhotoDTO>(photo));
             }
 
-            return BadRequest("Photo wasn't Added");
+            return BadRequest("Problem adding photo");
         }
 
         [HttpPut("set-main-photo/{photoId}")]
         public async Task<ActionResult> SetMainPhoto(int photoId)
         {
-            var user = await _unitOfWork.UserRepository.GetUserByUsernameAsync(User.GetUsername());
+            var user = await _unitOfWork.UserRepository.GetUserByPhotoId(photoId);
 
             var photo = user.Photos.FirstOrDefault(x => x.Id == photoId);
 
@@ -138,7 +131,7 @@ namespace API.Controllers
         [HttpDelete("delete-photo/{photoId}")]
         public async Task<ActionResult> DeletePhoto(int photoId)
         {
-            var user = await _unitOfWork.UserRepository.GetUserByUsernameAsync(User.GetUsername());
+            var user = await _unitOfWork.UserRepository.GetUserByPhotoId(photoId);
 
             var photo = user.Photos.FirstOrDefault(x => x.Id == photoId);
 

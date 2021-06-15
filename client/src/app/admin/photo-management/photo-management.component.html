@@ -1,1 +1,29 @@
-<p>photo-management works!</p>
+<div class="row">
+    <div *ngFor="let photo of photos" class="col-2">
+        <h2 class="mt-2">{{photo.username | titlecase}}</h2>
+        <img src="{{photo.url}}" alt="{{photo.url}}" class="img-thumbnail p-1 m-2">
+        <div class="text-center">
+            <button class="btn btn-success m-1" (click)="approvePhotoModal(template)">Approve</button>
+            <button class="btn btn-danger" (click)="rejectPhotoModal(temp)">Reject</button>
+        </div>
+
+        <br><br>
+        <ng-template #template>
+          <div class="modal-body text-center">
+            <p>Do you want to confirm?</p>
+            <button type="button" class="btn btn-success m-1" (click)="confirm(photo)" >Yes</button>
+            <button type="button" class="btn btn-primary" (click)="bsModalRef.hide()">No</button>
+          </div>
+        </ng-template>
+
+        <ng-template #temp>
+          <div class="modal-body text-center">
+            <p>Are You Sure You Want To Reject Photo?</p>
+            <button type="button" class="btn btn-success m-1" (click)="decline(photo)" >Yes</button>
+            <button type="button" class="btn btn-primary" (click)="bsModalRef.hide()">No</button>
+          </div>
+        </ng-template>
+    </div>
+</div>
+
+

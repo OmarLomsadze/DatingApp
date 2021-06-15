@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { RolesModalComponent } from 'app/modals/roles-modal/roles-modal.component';
+import { Photo } from 'app/_models/photo';
 import { User } from 'app/_models/User';
 import { AdminService } from 'app/_services/admin.service';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
@@ -45,6 +46,9 @@ export class UserManagementComponent implements OnInit {
       }
     })
   }
+
+  
+
 
   private getRolesArray(user) {
     const roles = [];
