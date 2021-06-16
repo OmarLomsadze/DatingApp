@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Message } from 'app/_models/message';
 import { Pagination } from 'app/_models/pagination';
-import { UserParams } from 'app/_models/userParams';
 import { ConfirmService } from 'app/_services/confirm.service';
 import { MessageService } from 'app/_services/message.service';
 
