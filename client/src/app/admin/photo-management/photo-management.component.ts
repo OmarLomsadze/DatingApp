@@ -1,4 +1,3 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, OnInit, TemplateRef } from '@angular/core';
 import { Photo } from 'app/_models/photo';
 import { AdminService } from 'app/_services/admin.service';
@@ -14,7 +13,8 @@ export class PhotoManagementComponent implements OnInit {
   bsModalRef: BsModalRef;
   message!: string;
 
-  constructor(private adminService: AdminService, private modalService: BsModalService) { }
+  constructor(private adminService: AdminService, private modalService: BsModalService) { 
+  }
 
   ngOnInit(): void {
     this.getPhotosForApproval();
@@ -22,7 +22,7 @@ export class PhotoManagementComponent implements OnInit {
 
   getPhotosForApproval() {
     this.adminService.getPhotosForApproval().subscribe(photos => {
-      this.photos = photos;
+        this.photos = photos;
     })
   }
 

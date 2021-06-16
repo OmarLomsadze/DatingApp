@@ -22,10 +22,10 @@ namespace API.Data
             _mapper = mapper;
         }
 
-        public async Task<MemberDTO> GetMemberAsync(string username, bool isCurrentUser)
+        public async Task<MemberDTO> GetMemberAsync(int id, bool isCurrentUser)
         {
             var result = _context.Users
-                .Where(x => x.UserName == username)
+                .Where(x => x.Id == id)
                 .ProjectTo<MemberDTO>(_mapper.ConfigurationProvider)
                 .AsQueryable();
 
@@ -38,7 +38,7 @@ namespace API.Data
         {
             var query = _context.Users.AsQueryable();
 
-            query = query.Where(u => u.UserName != userParams.CurrentUsername);
+            query = query.Where(u => u.Id != userParams.UserId);
             query = query.Where(u => u.Gender == userParams.Gender);
 
             var minDob = DateTime.Today.AddYears(-userParams.MaxAge - 1);
@@ -75,16 +75,9 @@ namespace API.Data
             return result;
         }
 
-        public async Task<string> GetUserGender(string username)
+        public async Task<string> GetUserGender(int userId)
         {
-            return await _context.Users.Where(x => x.UserName == username).Select(y => y.Gender).FirstOrDefaultAsync();
-        }
-
-        public async Task<IEnumerable<AppUser>> GetUsersAsync()
-        {
-            return await _context.Users
-                .Include(p => p.Photos)
-                .ToListAsync();
+            return await _context.Users.Where(x => x.Id == userId).Select(y => y.Gender).FirstOrDefaultAsync();
         }
 
         public void Update(AppUser user)

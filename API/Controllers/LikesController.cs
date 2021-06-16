@@ -21,16 +21,16 @@ namespace API.Controllers
             _unitOfWork = UOW;
         }
 
-        [HttpPost("{username}")]
-        public async Task<ActionResult> AddLike(string username)
+        [HttpPost("{id}")]
+        public async Task<ActionResult> AddLike(int id)
         {
             var sourceUserId = User.GetUserId();
-            var likedUser = await _unitOfWork.UserRepository.GetUserByUsernameAsync(username);
+            var likedUser = await _unitOfWork.UserRepository.GetUserByIdAsync(id);
             var sourceUser = await _unitOfWork.LikesRepository.GetUserWithLikes(sourceUserId);
 
             if (likedUser == null) return NotFound();
 
-            if (sourceUser.UserName == username) return BadRequest("U Can't");
+            if (sourceUser.Id == id) return BadRequest("U Can't");
 
             var userLike = await _unitOfWork.LikesRepository.GetUserLike(sourceUserId, likedUser.Id);
 

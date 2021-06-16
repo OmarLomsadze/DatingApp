@@ -26,7 +26,7 @@ namespace API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<MessageDTO>>> GetMessagesForUser([FromQuery] MessageParams messageParams)
         {
-            messageParams.Username = User.GetUsername();
+            messageParams.Id = User.GetUserId();
             var messages = await _unitOfWork.MessageRepository.GetMessagesForUser(messageParams);
 
             Response.AddPaginationHeader(messages.CurrentPage, messages.PageSize, messages.TotalCount, messages.TotalPages);
@@ -37,14 +37,14 @@ namespace API.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteMessage(int id)
         {
-            var username = User.GetUsername();
+            var userId = User.GetUserId();
             var message = await _unitOfWork.MessageRepository.GetMessage(id);
 
-            if (message.Sender.UserName != username && message.Recipient.UserName != username) return Unauthorized();
+            if (message.Sender.Id != userId && message.Recipient.Id != userId) return Unauthorized();
 
-            if (message.Sender.UserName == username) message.SenderDeleted = true;
+            if (message.Sender.Id == userId) message.SenderDeleted = true;
 
-            if (message.Recipient.UserName == username) message.RecipientDeleted = true;
+            if (message.Recipient.Id == userId) message.RecipientDeleted = true;
 
             if (message.SenderDeleted && message.RecipientDeleted) _unitOfWork.MessageRepository.DeleteMessage(message);
 

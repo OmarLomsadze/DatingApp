@@ -68,9 +68,9 @@ namespace API.Data.Repository
 
             query = messageParams.Container switch
             {
-                "Inbox" => query.Where(u => u.RecipientUsername == messageParams.Username && u.RecipientDeleted == false),
-                "Outbox" => query.Where(u => u.SenderUsername == messageParams.Username && u.SenderDeleted == false),
-                _ => query.Where(u => u.RecipientUsername == messageParams.Username && u.RecipientDeleted == false && u.DateRead == null)
+                "Inbox" => query.Where(u => u.RecipientId == messageParams.Id && u.RecipientDeleted == false),
+                "Outbox" => query.Where(u => u.SenderId == messageParams.Id && u.SenderDeleted == false),
+                _ => query.Where(u => u.RecipientId == messageParams.Id && u.RecipientDeleted == false && u.DateRead == null)
             };
 
             return await PagedList<MessageDTO>.CreateAsync(query, messageParams.PageNumber, messageParams.PageSize);

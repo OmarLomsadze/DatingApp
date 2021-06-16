@@ -9,6 +9,7 @@ import { MembersService } from 'app/_services/members.service';
 import { MessageService } from 'app/_services/message.service';
 import { PresenceService } from 'app/_services/presence.service';
 import { TabDirective, TabsetComponent } from 'ngx-bootstrap/tabs';
+import { ToastrService } from 'ngx-toastr';
 import { take } from 'rxjs/operators';
 
 @Component({
@@ -25,7 +26,8 @@ export class MemberDetailComponent implements OnInit, OnDestroy {
   messages: Message[] = [];
   user: User;
 
-  constructor(public presence: PresenceService, private route: ActivatedRoute, private messageService: MessageService, private accountService: AccountService, private router: Router) { 
+  constructor(public presence: PresenceService, private route: ActivatedRoute, 
+    private messageService: MessageService, private accountService: AccountService, private router: Router, private memberService: MembersService, private toastr: ToastrService) { 
     this.accountService.currentUser$.pipe(take(1)).subscribe(user => this.user = user);
     this.router.routeReuseStrategy.shouldReuseRoute = () => false;
   }
@@ -86,5 +88,11 @@ export class MemberDetailComponent implements OnInit, OnDestroy {
 
   selectTab(tabId: number) {
     this.memberTabs.tabs[tabId].active = true;
+  }
+
+  addLike(member: Member | undefined) {
+    this.memberService.addLike(member!.id).subscribe(() => {
+      this.toastr.success("You Have Liked " + member?.knownAs);
+    })
   }
 }

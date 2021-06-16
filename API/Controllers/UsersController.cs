@@ -13,6 +13,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 using API.Extensions;
 using API.Helpers;
+using Microsoft.AspNetCore.Identity;
 
 namespace API.Controllers
 {
@@ -22,20 +23,22 @@ namespace API.Controllers
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IPhotoService _photo;
+        private readonly UserManager<AppUser> _userManager;
 
-        public UsersController(IMapper mapper, IUnitOfWork unitOfWork, IPhotoService photoService) 
+        public UsersController(IMapper mapper, IUnitOfWork unitOfWork, IPhotoService photoService, UserManager<AppUser> userManager) 
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
             _photo = photoService;
+            _userManager = userManager;
         }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<MemberDTO>>> GetUsers([FromQuery]UserParams userParams)
         {
-            var gender = await _unitOfWork.UserRepository.GetUserGender(User.GetUsername());
+            var gender = await _unitOfWork.UserRepository.GetUserGender(User.GetUserId());
 
-            userParams.CurrentUsername = User.GetUsername();
+            userParams.UserId = User.GetUserId();
 
             if (string.IsNullOrEmpty(userParams.Gender))
                 userParams.Gender = gender == "male" ? "female" : "male";
@@ -47,17 +50,18 @@ namespace API.Controllers
             return Ok(users);
         }
 
-        [HttpGet("{username}", Name = "GetUser")]
-        public async Task<ActionResult<MemberDTO>> GetUser(string username)
+        [HttpGet("{id}", Name = "GetUser")]
+        public async Task<ActionResult<MemberDTO>> GetUser(int id)
         {
-            var currentUsername = User.GetUsername();
-            return await _unitOfWork.UserRepository.GetMemberAsync(username, isCurrentUser: currentUsername == username);
+            var userId = User.GetUserId();
+            var result =  await _unitOfWork.UserRepository.GetMemberAsync(id, isCurrentUser: userId == id);
+            return result;
         }
 
         [HttpPut]
         public async Task<ActionResult> UpdateUser(MemberUpdateDTO memberUpdateDTO)
         {
-            var user = await _unitOfWork.UserRepository.GetUserByUsernameAsync(User.GetUsername());
+            var user = await _unitOfWork.UserRepository.GetUserByIdAsync(User.GetUserId());
 
             _mapper.Map(memberUpdateDTO, user);
 
@@ -71,7 +75,14 @@ namespace API.Controllers
         [HttpPut("change-username")]
         public async Task<ActionResult<UsernameDTO>> UpdateUserName(UsernameDTO usernameDTO)
         {
-            var user = await _unitOfWork.UserRepository.GetUserByUsernameAsync(User.GetUsername());
+            var user = await _unitOfWork.UserRepository.GetUserByIdAsync(User.GetUserId());
+
+            usernameDTO = new UsernameDTO
+            {
+                Username = usernameDTO.Username.ToLower()
+            };
+
+            if (await UserExists(usernameDTO.Username)) return BadRequest("Username Is Taken");
 
             _mapper.Map(usernameDTO, user);
 
@@ -102,7 +113,7 @@ namespace API.Controllers
 
             if (await _unitOfWork.Complete())
             {
-                return CreatedAtRoute("GetUser", new { username = user.UserName }, _mapper.Map<PhotoDTO>(photo));
+                return CreatedAtRoute("GetUser", new { id = user.Id }, _mapper.Map<PhotoDTO>(photo));
             }
 
             return BadRequest("Problem adding photo");
@@ -150,6 +161,11 @@ namespace API.Controllers
             if (await _unitOfWork.Complete()) return Ok();
 
             return BadRequest("Failed To Delete");
+        }
+
+        private async Task<bool> UserExists(string username)
+        {
+            return await _userManager.Users.AnyAsync(x => x.UserName == username.ToLower());
         }
     }
 }
