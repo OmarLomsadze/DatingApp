@@ -4,11 +4,13 @@ import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
 import { Group } from 'app/_models/group';
 import { Message } from 'app/_models/message';
 import { User } from 'app/_models/User';
+import { MessageParams } from 'app/_models/messageParams';
 import { environment } from 'environments/environment';
 import { BehaviorSubject } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { BusyService } from './busy.service';
 import { getPaginatedResult, getPaginationHeaders } from './paginationHelper';
+import { AccountService } from './account.service';
 
 @Injectable({
   providedIn: 'root'
@@ -19,8 +21,13 @@ export class MessageService {
   private hubConnection: HubConnection;
   private messageThreadSource = new BehaviorSubject<Message[]>([]);
   messageThread$ = this.messageThreadSource.asObservable();
+  messageParams: MessageParams;
+  messages: Message;
+  user: User;
 
-  constructor(private http: HttpClient, private busyService: BusyService) { }
+  constructor(private http: HttpClient, private busyService: BusyService, private accountService: AccountService) {
+      this.messageParams = new MessageParams(this.messages);
+   }
 
   createHubConnection(user: User, otherUsername: string) {
     this.busyService.busy();
@@ -65,9 +72,10 @@ export class MessageService {
   }
   
 
-  getMessages(pageNumber: number, pageSize: number, container: string) {
-    let params = getPaginationHeaders(pageNumber, pageSize);
-    params = params.append('Container', container);
+  getMessages(messageParams: MessageParams) {
+    let params = getPaginationHeaders(messageParams.pageNumber, messageParams.pageSize);
+
+    params = params.append('container', messageParams.container);
     return getPaginatedResult<Message[]>(this.baseUrl + 'messages', params, this.http);
   }
 
@@ -82,5 +90,13 @@ export class MessageService {
 
   deleteMessage(id: number) {
     return this.http.delete(this.baseUrl + 'messages/' + id);
+  }
+
+  getMessageParams() {
+    return this.messageParams;
+  }
+
+  setMessageParams(params: MessageParams) {
+    this.messageParams = params;
   }
 }

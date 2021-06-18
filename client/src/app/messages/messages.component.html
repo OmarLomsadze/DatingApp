@@ -1,12 +1,12 @@
 <div class="row mb-4">
     <div class="btn-group" name="container">
-        <button class="btn btn-primary" btnRadio='Unread' [(ngModel)]="container" (click)="loadMessages()">
+        <button class="btn btn-primary" btnRadio='Unread' [(ngModel)]="messageParams.container" (click)="loadMessages()">
             <i class="fa fa-envelope"></i> Unread
         </button>
-        <button class="btn btn-primary" btnRadio='Inbox' [(ngModel)]="container" (click)="loadMessages()">
+        <button class="btn btn-primary" btnRadio='Inbox' [(ngModel)]="messageParams.container" (click)="loadMessages()">
             <i class="fa fa-envelope-open"></i> Inbox
         </button>
-        <button class="btn btn-primary" btnRadio='Outbox' [(ngModel)]="container" (click)="loadMessages()">
+        <button class="btn btn-primary" btnRadio='Outbox' [(ngModel)]="messageParams.container" (click)="loadMessages()">
             <i class="fa fa-paper-plane"></i> Outbox
         </button>
     </div>
@@ -24,7 +24,7 @@
             <th style="width: 20%;">Sent / Received</th>
             <th style="width: 20%;">Delete</th>
         </tr>
-        <tr [hidden]="loading" *ngFor="let message of messages" routerLink='{{container === "Outbox" ? "/members/" + message.recipientUsername : "/members/" + message.senderUsername}}'
+        <tr [hidden]="loading" *ngFor="let message of messages" routerLink='{{container === "Outbox" ? "/members/" + message.recipientId : "/members/" + message.senderId}}'
                  [queryParams]='{tab: 3}'>
             <td>{{message.content}}</td>
             <td>

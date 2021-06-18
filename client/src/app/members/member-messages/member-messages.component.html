@@ -1,5 +1,5 @@
 <div class="card">
-    <div class="card-body" #scrollMe style="overflow: scroll; height: 535px; width: 100%; overflow-x: hidden;" [scrollTop]="scrollMe.scrollHeight" >
+    <div class="card-body" #scrollMe [scrollTop]="scrollMe.scrollHeight" >
         <div *ngIf="(messageService.messageThread$ | async)?.length === 0">
             No Messages Yet... Say hi by Messaging First
         </div>
@@ -7,20 +7,24 @@
         <ul *ngIf="(messageService.messageThread$ | async)?.length > 0" class="chat">
             <li *ngFor="let message of (messageService.messageThread$ | async)">
                 <div>
-                    <span class="chat-image float-right">
-                        <img src="{{message.senderPhotoUrl || './assets/user.png'}}" alt="{{message.senderUsername}}" class="rounded-circle" style="float: right;">
-                        <p>{{message.senderUsername}}</p>
+                    <span class="chat-image">
+                        <img [ngStyle]="message.senderUsername == username 
+                        ? {'float': 'right', 'margin-top': '4.3%'} 
+                        : {'float': 'left', 'margin-top': '4.3%'}"
+                    src="{{message.senderPhotoUrl || './assets/user.png'}}" alt="{{message.senderUsername}}" class="rounded-circle">
                     </span>
                     <div class="chat-body">
-                        <div class="header">
+                        <div class="header" [ngStyle]="message.senderUsername == username ? {'margin-left': '80%'} : {'margin-left': '50px'} ">
                             <small class="text-muted">
                                 <span class="fa fa-clock-o"> {{message.messageSent | timeago}}</span>
                                 <span class="text-danger" *ngIf="!message.dateRead && message.senderUsername !== username"> (unread)</span>
-                                <span class="text-success" *ngIf="message.dateRead && message.senderUsername !== username"> (read {{message.dateRead | timeago}})</span>
+                                <span class="text-success" *ngIf="message.dateRead && message.senderUsername !== username"> (read)</span>
                             </small>
                         </div>
-                        <p *ngIf="!message.dateRead" style="color: rgb(255, 6, 6);">{{message.content}}</p>
-                        <p *ngIf="message.dateRead" style="color: rgb(16, 231, 88);">{{message.content}}</p>
+                        <p [ngStyle]="message.senderUsername == username 
+                                ? {'margin-left': 'auto', 'color': '#ff00cc', 'margin-right': '50px'} 
+                                : {'margin-left': '50px', 'color': '#39ff14'}"
+                        class="mesij">{{message.content}}</p>
                     </div>
                 </div>
             </li>

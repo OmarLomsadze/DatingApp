@@ -64,7 +64,6 @@ namespace API.Controllers
             var user = await _unitOfWork.UserRepository.GetUserByIdAsync(User.GetUserId());
 
             _mapper.Map(memberUpdateDTO, user);
-
             _unitOfWork.UserRepository.Update(user);
 
             if (await _unitOfWork.Complete()) return NoContent();

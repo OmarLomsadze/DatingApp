@@ -17,7 +17,8 @@
     <app-date-input [formControl]='registerForm.controls["dateOfBirth"]' [maxDate]='maxDate' [label]='"BirthDate: 18+"'></app-date-input>
     <app-text-input [formControl]='registerForm.controls["city"]' [label]='"City"'></app-text-input>
     <app-text-input [formControl]='registerForm.controls["country"]' [label]='"Country"'></app-text-input>
-    <app-text-input [formControl]='registerForm.controls["password"]' [label]='"password"' [type]='"password"'></app-text-input>
+    <p style="text-align: center;">Password Must Have At Least 1 UpperCase Character and One Number</p>
+    <app-text-input [formControl]='registerForm.controls["password"]' [label]='"Password"' [type]='"password"'></app-text-input>
     <app-text-input [formControl]='registerForm.controls["confirmPassword"]' [label]='"Confirm Password"' [type]='"password"'></app-text-input>
 
     <div class="row" *ngIf="validationErrors.length > 0">

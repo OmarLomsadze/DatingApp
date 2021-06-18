@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Message } from 'app/_models/message';
 import { Pagination } from 'app/_models/pagination';
+import { MessageParams } from 'app/_models/messageParams';
 import { ConfirmService } from 'app/_services/confirm.service';
 import { MessageService } from 'app/_services/message.service';
 
@@ -12,20 +13,21 @@ import { MessageService } from 'app/_services/message.service';
 export class MessagesComponent implements OnInit {
   messages: Message[] = [];
   pagination!: Pagination;
-  container = 'Inbox';
-  pageNumber = 1;
-  pageSize = 5;
+  messageParams: MessageParams;
   loading = false;
 
-  constructor(private messageService: MessageService, private confirmService: ConfirmService) { }
+  constructor(private messageService: MessageService, private confirmService: ConfirmService) {
+    this.messageParams = this.messageService.getMessageParams();
+   }
 
   ngOnInit(): void {
     this.loadMessages();
   }
 
   loadMessages() {
-    this.loading = true;
-    this.messageService.getMessages(this.pageNumber, this.pageSize, this.container).subscribe(o => {
+    this.messageService.setMessageParams(this.messageParams);
+
+    this.messageService.getMessages(this.messageParams).subscribe(o => {
       this.messages = o.result;
       this.pagination = o.pagination;
       this.loading = false;
@@ -33,7 +35,7 @@ export class MessagesComponent implements OnInit {
   }
 
   pageChanged(event: any) {
-    this.pageNumber = event.page;
+    this.messageParams.pageNumber = event.page;
     this.loadMessages();
   }
 

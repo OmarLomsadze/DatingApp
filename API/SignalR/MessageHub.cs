@@ -90,7 +90,7 @@ namespace API.SignalR
                 var connections = await _tracker.GetCOnnectionsForUser(recipient.UserName);
                 if (connections != null)
                 {
-                    await _presenceHub.Clients.Clients(connections).SendAsync("NewMessageReceived", new { username = sender.UserName, knownAs = sender.KnownAs });
+                    await _presenceHub.Clients.Clients(connections).SendAsync("NewMessageReceived", new { id = sender.Id, knownAs = sender.KnownAs });
                 }
             }
 

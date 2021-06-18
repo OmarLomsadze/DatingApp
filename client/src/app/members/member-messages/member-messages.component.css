@@ -27,10 +27,27 @@
 }
    
 ::-webkit-scrollbar-thumb {
-    background: red; 
+    background: #5937f1; 
     border-radius: 10px;
 }
   
 ::-webkit-scrollbar-thumb:hover {
-    background: #b30000; 
+    background: #6e0feb; 
+}
+
+.card-body {
+    overflow: scroll;
+    height: 690px;
+    width: 100%;
+    overflow-x: hidden;
+}
+
+.mesij {
+    background-color: #210070;
+    border-radius: 15px;
+    padding: 8px 17px;
+    max-width: fit-content;
+    margin-top: 8px;
+    font-family: Zapf Chancery, cursive;
+    font-size: large;
 }
