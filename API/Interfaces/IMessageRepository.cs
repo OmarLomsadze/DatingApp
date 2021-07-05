@@ -19,7 +19,7 @@ namespace API.Interfaces
         void DeleteMessage(Message message);
         Task<Message> GetMessage(int id);
         Task<PagedList<MessageDTO>> GetMessagesForUser(MessageParams messageParams);
-        Task<PagedList<MessengersDTO>> GetMessengers(MessengersParams messengersParams);
+        Task<PagedList<TudaSudaDTO>> GetMessengers(MessengersParams messengersParams);
         Task<IEnumerable<MessageDTO>> GetMessageThread(string currentUserName, string recipientUsername);
     }
 }

@@ -76,11 +76,11 @@ namespace API.Data.Repository
             return await PagedList<MessageDTO>.CreateAsync(query, messageParams.PageNumber, messageParams.PageSize);
         }
 
-        public async Task<PagedList<MessengersDTO>> GetMessengers(MessengersParams messengersParams)
+        public async Task<PagedList<TudaSudaDTO>> GetMessengers(MessengersParams messengersParams)
         {
-            var query = _context.Messages.OrderByDescending(m => m.SenderUsername).ProjectTo<MessengersDTO>(_mapper.ConfigurationProvider).AsQueryable();
+            var query = _context.Messages.OrderBy(m => m.SenderUsername).ProjectTo<TudaSudaDTO>(_mapper.ConfigurationProvider).AsQueryable();
 
-            return await PagedList<MessengersDTO>.CreateAsync(query, messengersParams.PageNumber, messengersParams.PageSize);
+            return await PagedList<TudaSudaDTO>.CreateAsync(query, messengersParams.PageNumber, messengersParams.PageSize);
         }
 
         public async Task<IEnumerable<MessageDTO>> GetMessageThread(string currentUserName, string recipientUsername)
