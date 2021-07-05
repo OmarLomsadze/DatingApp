@@ -19,14 +19,15 @@
 <div class="row" *ngIf="messages.length > 0">
     <table class="table table-hover" style="cursor: pointer;">
         <tr>
-            <th style="width: 40%;">Message</th>
-            <th style="width: 20%;">From / To</th>
-            <th style="width: 20%;">Sent / Received</th>
-            <th style="width: 20%;">Delete</th>
+            <th style="width: 20%;" *ngIf="messageParams.container == 'Inbox' || messageParams.container == 'Unread' ">From</th>
+            <th style="width: 20%;" *ngIf="messageParams.container == 'Outbox'">To</th>
+            <th style="width: 50%;">Message</th>
+            <th style="width: 20%;" *ngIf="messageParams.container == 'Inbox' || messageParams.container == 'Unread' ">Received</th>
+            <th style="width: 20%;" *ngIf="messageParams.container == 'Outbox'">Sent</th>
+            <th style="width: 10%;">Delete</th>
         </tr>
         <tr [hidden]="loading" *ngFor="let message of messages" routerLink='{{container === "Outbox" ? "/members/" + message.recipientId : "/members/" + message.senderId}}'
                  [queryParams]='{tab: 3}'>
-            <td>{{message.content}}</td>
             <td>
                 <div *ngIf="container === 'Outbox'">
                     <img src="{{message.recipientPhotoUrl || './assets/user.png'}}" alt="{{message.recipientUsername}}" class="img-circle rounded-circle mr-2">
@@ -37,6 +38,7 @@
                     <strong>{{message.senderUsername | titlecase}}</strong>
                 </div>
             </td>
+            <td style="font-size: 20px; color: #39ff14;"><strong>{{message.content | titlecase}}</strong></td>
             <td>{{message.messageSent | timeago}}</td>
             <td>
                 <button (click)="$event.stopPropagation()" class="btn btn-danger" (click)="deleteMessage(message.id)">Delete</button>

@@ -34,6 +34,17 @@ namespace API.Controllers
             return messages;
         }
 
+        [HttpGet("messengers")]
+        public async Task<ActionResult<IEnumerable<TudaSudaDTO>>> GetMessengers([FromQuery] MessengersParams messengersParams)
+        {
+            messengersParams.Id = User.GetUserId();
+            var messengers = await _unitOfWork.MessageRepository.GetMessengers(messengersParams);
+
+            Response.AddPaginationHeader(messengers.CurrentPage, messengers.PageSize, messengers.TotalCount, messengers.TotalPages);
+
+            return messengers;
+        }
+
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteMessage(int id)
         {

@@ -79,6 +79,13 @@ export class MessageService {
     return getPaginatedResult<Message[]>(this.baseUrl + 'messages', params, this.http);
   }
 
+  getMessengers(messageParams: MessageParams) {
+    let params = getPaginationHeaders(messageParams.pageNumber, messageParams.pageSize);
+
+    params = params.append('container', messageParams.container);
+    return getPaginatedResult<Message[]>(this.baseUrl + 'messages/messengers', params, this.http);
+  }
+
   getMessageThread(username: string) {
     return this.http.get<Message[]>(this.baseUrl + 'messages/thread/' + username);
   }
